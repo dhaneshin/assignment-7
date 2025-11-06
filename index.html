@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f6fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
+    }
+    h1 { color: #2f3640; }
+    .form-container {
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+    }
+    input, textarea {
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    button {
+      background-color: #273c75;
+      color: white;
+      padding: 8px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover { background-color: #192a56; }
+    .task {
+      background-color: #fff;
+      border: 1px solid #dcdde1;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      width: 320px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .task h3 { margin: 0; color: #353b48; }
+    .task p { color: #718093; margin: 5px 0 10px; }
+    .completed h3, .completed p {
+      text-decoration: line-through;
+      color: gray;
+    }
+    .task button { margin-right: 8px; font-size: 13px; padding: 6px 8px; }
+  </style>
+</head>
+<body>
+  <h1>To-Do List</h1>
+  <div class="form-container">
+    <input type="text" id="taskTitle" placeholder="Enter task title">
+    <textarea id="taskDesc" rows="3" placeholder="Enter task description"></textarea>
+    <button id="addTaskBtn">Add Task</button>
+  </div>
+  <div id="taskList"></div>
+  <script>
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const taskList = document.getElementById('taskList');
+
+    addTaskBtn.addEventListener('click', () => {
+      const title = document.getElementById('taskTitle').value.trim();
+      const desc = document.getElementById('taskDesc').value.trim();
+      if (!title || !desc) return alert('Please enter both title and description.');
+
+      const taskDiv = document.createElement('div');
+      taskDiv.classList.add('task');
+
+      const taskTitle = document.createElement('h3');
+      taskTitle.textContent = title;
+
+      const taskDesc = document.createElement('p');
+      taskDesc.textContent = desc;
+
+      const completeBtn = document.createElement('button');
+      completeBtn.textContent = 'Mark as Completed';
+
+      const editBtn = document.createElement('button');
+      editBtn.textContent = 'Edit';
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+
+      completeBtn.addEventListener('click', () => {
+        taskDiv.classList.toggle('completed');
+        completeBtn.textContent = taskDiv.classList.contains('completed')
+          ? 'Mark as Incomplete'
+          : 'Mark as Completed';
+      });
+
+      deleteBtn.addEventListener('click', () => taskDiv.remove());
+
+      editBtn.addEventListener('click', () => {
+        if (editBtn.textContent === 'Edit') {
+          const titleInput = document.createElement('input');
+          titleInput.value = taskTitle.textContent;
+          const descInput = document.createElement('textarea');
+          descInput.value = taskDesc.textContent;
+          taskDiv.replaceChild(titleInput, taskTitle);
+          taskDiv.replaceChild(descInput, taskDesc);
+          editBtn.textContent = 'Save';
+        } else {
+          const updatedTitle = taskDiv.querySelector('input').value;
+          const updatedDesc = taskDiv.querySelector('textarea').value;
+          const newTitle = document.createElement('h3');
+          newTitle.textContent = updatedTitle;
+          const newDesc = document.createElement('p');
+          newDesc.textContent = updatedDesc;
+          taskDiv.replaceChild(newTitle, taskDiv.querySelector('input'));
+          taskDiv.replaceChild(newDesc, taskDiv.querySelector('textarea'));
+          editBtn.textContent = 'Edit';
+        }
+      });
+
+      taskDiv.append(taskTitle, taskDesc, completeBtn, editBtn, deleteBtn);
+      taskList.appendChild(taskDiv);
+
+      document.getElementById('taskTitle').value = '';
+      document.getElementById('taskDesc').value = '';
+    });
+  </script>
+</body>
+</html>
